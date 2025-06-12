@@ -57,6 +57,10 @@ plt.title("Correlation Heatmap of All Features")
 plt.tight_layout()
 plt.show()
 
+####HEATMAP SUMMARIZE:The correlation heatmap reveals key features associated with customer churn. Specifically, long-term customers, those with two-year contracts, and those using support services are less likely to churn. In contrast, customers using fiber optic internet, opting for paperless billing, and paying via electronic check show higher churn tendencies. The presence of strong correlations among service-related dummy variables suggests potential multicollinearity issues that should be addressed during model building.
+# Positive Correlations with churn include: Fiber optic internet service, Paperless billing, Electronic check payment method
+# Negative Correlations with churn include: Long tenure, Two-year contract, Security services
+
 # CORRELATION WITH CHURN - BARPLOT
 plt.figure(figsize=(10, 8))
 churn_corr_sorted = corr_matrix["Churn"].sort_values(ascending=False)
@@ -78,10 +82,7 @@ plt.xlabel("Correlation Coefficient")
 plt.tight_layout()
 plt.show()
 
-# INTERPRETATION COMMENT (Can be added in the report):
-# Customers with longer tenure, security services, and long-term contracts are less likely to churn.
-# Users with fiber internet, paperless billing, or electronic checks are more likely to churn.
-
+## INTERPRETATION COMMENT: The plots reveal that customers using fiber optic internet, paying via electronic check, or having high monthly charges are more likely to churn—suggesting a cost-sensitive, digital-savvy profile. In contrast, long-tenured users, those with two-year contracts, and those subscribed to support or security services are less likely to leave. These patterns highlight the importance of retention strategies focused on customer engagement, service bundling, and contract-based commitment.
 # BOX PLOTS OF NUMERICAL FEATURES BY CHURN
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
@@ -106,10 +107,15 @@ axes[2].set_ylabel("Total Charges")
 plt.tight_layout()
 plt.show()
 
+## INTERPRETATION COMMENT: The box plots indicate clear differences in numerical features between churned and retained customers. Customers who churned tend to have shorter tenure, higher monthly charges, and lower total charges—suggesting they are relatively new customers dissatisfied with service costs. Conversely, customers with longer tenure and higher total charges are more loyal and less likely to leave. This highlights the importance of early engagement and pricing strategy in churn prevention.
+
+
 # 15. CHURN CLASS DISTRIBUTION ANALYSIS
 churn_counts = df_telco['Churn'].value_counts()
 print("Churn class distribution:\n", churn_counts)
 print("\nChurn class percentages (%):\n", churn_counts / len(df_telco) * 100)
+
+## COMMENT: The churn distribution is imbalanced, with approximately 73% of customers not churning and 27% churning. This imbalance should be addressed during the modeling phase using techniques such as resampling, or by choosing algorithms that handle imbalance well.
 
 # BAR CHART
 plt.figure(figsize=(6, 4))
