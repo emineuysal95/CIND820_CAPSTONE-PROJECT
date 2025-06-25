@@ -1,8 +1,11 @@
+# CIND 820 FINAL PROJECT : Customer Churn Prediction in E-commerce and Telecommunications
 ## THE E-COMMERCE CHURN ANALYSIS
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg')
 import seaborn as sns
 import scipy.stats as ss
 from sklearn.preprocessing import LabelEncoder
@@ -12,12 +15,19 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 file_path = r"C:\Users\emine\OneDrive\Masaüstü\CIND820\ecommerce_customer_data.csv"
 df_ecom = pd.read_csv(file_path)
 
+# EDA REPORT GENERATION USING ydata_profiling
+from ydata_profiling import ProfileReport
+
+# Build the EDA report
+profile = ProfileReport(df_ecom, title="E-Commerce Customer Churn - EDA Report", explorative=True)
+# Save the report to an HTML file
+profile.to_file(r"C:\Users\emine\OneDrive\Masaüstü\CIND820\ecommerce_eda_report.html")
+
 # INITIAL DATA INSPECTION
 print(df_ecom.head())
 print(df_ecom.info())
 print(df_ecom.describe(include='all'))
 print(df_ecom.dtypes)
-
 
 # DROP UNNECESSARY COLUMNS
 df_ecom.drop(columns=['Customer ID', 'Customer Name'], inplace=True, errors='ignore')
@@ -223,23 +233,18 @@ plt.xlim(0, 1)
 plt.tight_layout()
 plt.show()\
 
-# EDA REPORT GENERATION USING ydata_profiling
+# BUILT EDA REPORT FOR CLEANED E-COMMERCE DATA
 from ydata_profiling import ProfileReport
-# Load the dataset again for EDA report generation
-file_path = r"C:\Users\emine\OneDrive\Masaüstü\CIND820\ecommerce_customer_data.csv"
-df_ecom = pd.read_csv(file_path)
+# Assuming 'df' already contains the cleaned e-commerce dataset
+df_ecom = df.copy()
+# Generate the profiling report
+profile_ecom = ProfileReport(df_ecom, title="EDA Report - Cleaned E-Commerce Data", explorative=True)
+# Save the report to your desktop folder
+profile_ecom.to_file("C:/Users/emine/OneDrive/Masaüstü/CIND820/eda_ecommerce_cleaned.html")
 
-# Build the EDA report
-profile = ProfileReport(df_ecom, title="E-Commerce Customer Churn - EDA Report", explorative=True)
-# Save the report to an HTML file
-profile.to_file(r"C:\Users\emine\OneDrive\Masaüstü\CIND820\ecommerce_eda_report.html")
 
 ## MODELING AND PREDICTION OF CUSTOMER CHURN
 # UPLOAD NECESSARY LIBRARIES
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -315,6 +320,14 @@ def run_adasyn_logistic_regression(df):
     print("Resampled class distribution (%):")
     print(pd.Series(y_res).value_counts(normalize=True) * 100)
 
+#  VISUALIZE THE CHURN DISTRIBUTION AFTER ADASYN
+    plt.figure(figsize=(8, 5))
+    sns.countplot(x=y_res)
+    plt.title('Churn Distribution After ADASYN')
+    plt.xlabel('Churn (0 = No, 1 = Yes)')
+    plt.ylabel('Count')
+    plt.show()
+
 # 7. TRAIN LOGISTIC REGRESSION MODEL AND EVALUATE
     model = LogisticRegression()
     model.fit(X_res, y_res)
@@ -338,14 +351,11 @@ if __name__ == "__main__":
 
 # XGBoost MODEL FOR CUSTOMER CHURN PREDICTION
 # IMPORT NECESSARY LIBRARIES
-import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, RocCurveDisplay
 from xgboost import XGBClassifier
 from sklearn.impute import SimpleImputer
-import numpy as np
 
 # 1. LABEL ENCODING AND FEATURE SELECTION
 def run_xgboost_churn(df):
@@ -402,20 +412,17 @@ def run_xgboost_churn(df):
 if __name__ == "__main__":
     run_xgboost_churn(df)
 
-##| Metod             | AUC    | Yorum                                      |
-#| ----------------- | ------ | ------------------------------------------ |
-#| ADASYN + Logistic | \~0.51 | Neredeyse rastgele, ayrım gücü zayıf       |
-#| XGBoost           | \~0.73 | Kabul edilebilir “ayrım gücü”, oldukça iyi |
+##| Method             | AUC    | Comment                                        |
+#| --------------------| ------ | -----------------------------------------------|
+#| ADASYN + Logistic   | \~0.51 | Almost random, the discrimination power is weak|
+#| XGBoost             | \~0.73 | Acceptable "discrimination power" is quite good|
 # COMMENT: The ADASYN + Logistic Regression model achieved an AUC of approximately 0.51, indicating nearly random performance with no real predictive power. In contrast, the XGBoost model demonstrated a significantly better AUC of around 0.73, suggesting it has a reasonable level of discrimination ability in predicting customer churn.
-# This indicates that while the ADASYN + Logistic Regression model struggled to capture meaningful patterns in
+# This indicates that while the ADASYN + Logistic Regression model struggled to capture meaningful patterns in.
 
 
 # SHAP ANALYSIS FOR XGBoost MODEL
 
 import shap
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import (
@@ -426,10 +433,21 @@ from sklearn.metrics import (
     recall_score,
     f1_score
 )
-from xgboost import XGBClassifier
-from sklearn.impute import SimpleImputer
 
 def run_xgboost_with_shap(df):
+    import shap
+
+    # 1. DROP UNNECESSARY COLUMNS
+    # Assuming 'Customer Name' and 'Customer ID' are not needed for modeling
+    cols_to_drop = ['Customer Name', 'Customer ID']
+    df = df.drop(columns=cols_to_drop, errors='ignore')
+
+    # 2. IF 'Customer Age' AND 'Age' ARE THE SAME, DROP 'Age'
+    # This is to avoid multicollinearity issues
+    if 'Customer Age' in df.columns and 'Age' in df.columns:
+        if df['Customer Age'].equals(df['Age']):
+            df = df.drop(columns=['Age'])
+
     # Label encoding
     df_enc = df.copy()
     for col in df_enc.select_dtypes(include='object').columns:
@@ -467,7 +485,7 @@ def run_xgboost_with_shap(df):
     print("=== XGBoost Classification Report ===")
     print(classification_report(y_test, y_pred, zero_division=0))
 
-    # Additional Class 1 (Churn) metrics
+    # Churn-specific metrics
     print("=== Class 1 (Churn) Focused Metrics ===")
     print("Precision:", precision_score(y_test, y_pred, pos_label=1, zero_division=0))
     print("Recall:", recall_score(y_test, y_pred, pos_label=1, zero_division=0))
@@ -477,7 +495,7 @@ def run_xgboost_with_shap(df):
     plt.title("ROC Curve - XGBoost")
     plt.show()
 
-    # SHAP analysis
+    # === SHAP ANALYSIS ===
     print("=== SHAP Feature Importance ===")
     explainer = shap.Explainer(model, X_train)
     shap_values = explainer(X_test)
@@ -485,7 +503,8 @@ def run_xgboost_with_shap(df):
     shap.summary_plot(shap_values, X_test, plot_type="bar")
     shap.summary_plot(shap_values, X_test)
 
-# RUN THE FUNCTION
+
+# RUN FUNCTION
 if __name__ == "__main__":
     df = pd.read_csv(r"C:\Users\emine\OneDrive\Masaüstü\CIND820\ecommerce_customer_data.csv")
     run_xgboost_with_shap(df)
