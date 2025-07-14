@@ -69,3 +69,12 @@ To predict customer churn by performing in-depth data exploration, feature engin
 - **Source**:  
   Jagtap, S. (2023). *E-Commerce Customer for Behavior Analysis*  
   [🔗 Kaggle Dataset](https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis)
+
+---
+
+## Author
+
+Emine Uysal  
+Certificate Student, Data Analytics, Big Data & Predictive Analytics  
+Toronto Metropolitan University  
+[GitHub Profile](https://github.com/emineuysal95)
