@@ -91,9 +91,10 @@ Note: XGBoost achieved the best performance with balanced metrics and strong int
 ---
 
 # Dataset
-Source:
-Kaggle. (2018). Telco Customer Churn. 
-https://www.kaggle.com/datasets/blastchar/telco-customer-churn
+- **Source**:  
+Kaggle. (2018). *Telco Customer Churn*
+[🔗 Kaggle Dataset]https://www.kaggle.com/datasets/blastchar/telco-customer-churn
+
 
 ---
 
