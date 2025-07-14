@@ -1,4 +1,4 @@
-#Telco Customer Churn Prediction
+# Telco Customer Churn Prediction
 
 This project aims to analyze and predict customer churn behavior in the telecommunications sector using a real-world dataset. The goal is to build interpretable machine learning models, identify key churn drivers, and provide actionable insights through explainable AI techniques.
 
@@ -90,8 +90,13 @@ Note: XGBoost achieved the best performance with balanced metrics and strong int
 
 ---
 
-✍️ Author
+# Dataset
+
+
+---
+
+# Author
 Emine Uysal
-Postgraduate Certificate in Big Data & Predictive Analytics
+Certificate Student, Data Analytics, Big Data & Predictive Analytics
 Toronto Metropolitan University
 GitHub Profile
