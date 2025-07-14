@@ -14,11 +14,13 @@ Dataset: Telco Customer Churn Dataset (publicly available)
 
 # Repository Structure
 
-├── Telco_Churn_Analysis.ipynb       # Main Jupyter Notebook (EDA + modeling)
-├── telco_customer_data.csv          # Dataset used for analysis
-├── README.md                        # Project overview and documentation
-├── churn_model_outputs/             # Folder for saving model files, SHAP visuals, etc.
-└── visuals/                         # Figures and plots used in reporting
+├── Telco_Churn_Analysis.ipynb       # Jupyter Notebook containing full EDA, modeling, and interpretation
+├── Telco_Churn_Analysis.py          # Python script version of the full analysis workflow
+├── telco_customer_data.csv          # Original Telco customer churn dataset
+├── README.md                        # Project description, methodology, and summary documentation
+├── Eda Reports/                     # Folder containing automated and manual EDA reports with visualizations
+└── Telco_Churn_Analysis.html        # Executed notebook exported as an interactive HTML report
+
 
 ---
 
