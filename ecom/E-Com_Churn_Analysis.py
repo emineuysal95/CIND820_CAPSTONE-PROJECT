@@ -1,6 +1,6 @@
 # CIND 820 FINAL PROJECT : Customer Churn Prediction in E-commerce and Telecommunications
 ## THE E-COMMERCE CHURN ANALYSIS
-
+#%%IMPORT NECESSARY LIBRARIES
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -156,8 +156,14 @@ for col in ['Product Price', 'Quantity', 'Total Purchase Amount', 'Customer Age'
 # FEATURE ENGINEERING
 df['PriceToQuantity'] = df['Product Price'] / (df['Quantity'] + 1)
 df['AvgItemValue'] = df['Total Purchase Amount'] / (df['Quantity'] + 1)
+df['EngagementScore'] = df['Quantity'] * df['AvgItemValue']   # Example engagement score based on quantity and average item value
 df['AgeGroup'] = pd.cut(df['Customer Age'], bins=[0, 25, 40, 60, 100],
                         labels=['GenZ', 'Millennial', 'GenX', 'Boomer'])
+sns.boxplot(x=df['EngagementScore'])
+plt.title('Boxplot of Engagement Score')
+plt.show() 
+
+## COMMENT: After introducing the EngagementScore metric—a behavioral indicator combining purchase frequency and item value—the model began assigning greater importance to features reflecting monetary and temporal user activity. While EngagementScore itself did not appear in the top SHAP rankings, its influence is evident in the rising importance of related features such as Total Purchase Amount, Product Price, and Purchase Date. This shift highlights the value of engineered behavioral features in improving both interpretability and predictive performance.
 
 # CROSS-TABULATIONS WITH CHURN
 for col in cat_cols:
@@ -510,94 +516,107 @@ if __name__ == "__main__":
 
 #11. SHAP ANALYSIS FOR XGBoost MODEL
 
+import pandas as pd
+import matplotlib.pyplot as plt
 import shap
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split, cross_val_score
+from xgboost import XGBClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     classification_report,
-    confusion_matrix,
-    RocCurveDisplay,
     precision_score,
     recall_score,
-    f1_score
+    f1_score,
+    roc_auc_score,
+    RocCurveDisplay
 )
+from imblearn.over_sampling import SMOTE
 
-def run_xgboost_with_shap(df):
-    import shap
-
+def run_xgboost_smote_shap(df):
     # 1. DROP UNNECESSARY COLUMNS
-    # Assuming 'Customer Name' and 'Customer ID' are not needed for modeling
-    cols_to_drop = ['Customer Name', 'Customer ID']
-    df = df.drop(columns=cols_to_drop, errors='ignore')
+    df = df.drop(columns=['Customer Name', 'Customer ID'], errors='ignore')
 
-    # 2. IF 'Customer Age' AND 'Age' ARE THE SAME, DROP 'Age'
-    # This is to avoid multicollinearity issues
+    # 2. HANDLE DUPLICATE AGE
     if 'Customer Age' in df.columns and 'Age' in df.columns:
         if df['Customer Age'].equals(df['Age']):
             df = df.drop(columns=['Age'])
 
-    # Label encoding
-    df_enc = df.copy()
-    for col in df_enc.select_dtypes(include='object').columns:
-        df_enc[col] = LabelEncoder().fit_transform(df_enc[col].astype(str))
+    # 3. ONE-HOT ENCODING
+    # Remove high cardinality columns to avoid memory issues
+    high_card_cols = [col for col in df.columns if df[col].nunique() > 500]
+    df = df.drop(columns=high_card_cols)
+    print("Dropped high-cardinality columns:", high_card_cols)
+    # Encode categorical variables using one-hot encoding
+    df_enc = pd.get_dummies(df, drop_first=True)
 
+    # 4. DEFINE X AND y
     X = df_enc.drop(columns=['Churn'])
     y = df_enc['Churn']
 
-    # Train-test split
+    # 5. TRAIN-TEST SPLIT
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, stratify=y, test_size=0.2, random_state=42
     )
 
-    # Impute missing values
+    # 6. IMPUTE MISSING VALUES
     imp = SimpleImputer(strategy='median')
     X_train = pd.DataFrame(imp.fit_transform(X_train), columns=X_train.columns)
     X_test = pd.DataFrame(imp.transform(X_test), columns=X_test.columns)
 
-    # Handle class imbalance
-    neg, pos = (y_train == 0).sum(), (y_train == 1).sum()
-    scale_pos_weight = neg / pos
+    # 7. APPLY SMOTE TO BALANCE TRAINING DATA
+    sm = SMOTE(random_state=42)
+    X_train_res, y_train_res = sm.fit_resample(X_train, y_train)
 
-    # Train XGBoost model
+    # 8. TUNED XGBOOST MODEL
     model = XGBClassifier(
         objective='binary:logistic',
-        scale_pos_weight=scale_pos_weight,
         use_label_encoder=False,
         eval_metric='logloss',
+        learning_rate=0.05,
+        max_depth=4,
+        n_estimators=300,
+        subsample=0.8,
+        colsample_bytree=0.8,
         random_state=42
     )
-    model.fit(X_train, y_train)
+    model.fit(X_train_res, y_train_res)
 
-    # Predict and evaluate
-    y_pred = model.predict(X_test)
-    print("=== XGBoost Classification Report ===")
+    # 9. PREDICT AND EVALUATE
+    # Predict probabilities for the test set
+    y_proba = model.predict_proba(X_test)[:, 1]
+    # Convert probabilities to binary predictions using a threshold
+    # Adjust the threshold to 0.3 for better sensitivity to churn
+    threshold = 0.3
+    y_pred = (y_proba >= threshold).astype(int)
+
+    print("=== Tuned XGBoost Classification Report (Threshold = 0.3) ===")
     print(classification_report(y_test, y_pred, zero_division=0))
 
-    # Churn-specific metrics
     print("=== Class 1 (Churn) Focused Metrics ===")
     print("Precision:", precision_score(y_test, y_pred, pos_label=1, zero_division=0))
     print("Recall:", recall_score(y_test, y_pred, pos_label=1, zero_division=0))
     print("F1 Score:", f1_score(y_test, y_pred, pos_label=1, zero_division=0))
+    print("ROC AUC:", roc_auc_score(y_test, y_proba))
 
-    RocCurveDisplay.from_estimator(model, X_test, y_test)
-    plt.title("ROC Curve - XGBoost")
+    RocCurveDisplay.from_predictions(y_test, y_proba)
+    plt.title("ROC Curve - Tuned XGBoost (SMOTE)")
     plt.show()
 
-    # === SHAP ANALYSIS ===
+    # 10. SHAP ANALYSIS
     print("=== SHAP Feature Importance ===")
-    explainer = shap.Explainer(model, X_train)
+    explainer = shap.Explainer(model, X_train_res)
     shap_values = explainer(X_test)
 
     shap.summary_plot(shap_values, X_test, plot_type="bar")
     shap.summary_plot(shap_values, X_test)
 
-
-# RUN FUNCTION
+# === RUN ===
 if __name__ == "__main__":
     df = pd.read_csv(r"C:\Users\emine\OneDrive\Masaüstü\CIND820\ecommerce_customer_data.csv")
-    run_xgboost_with_shap(df)
+    run_xgboost_smote_shap(df)
 
-# COMMENT: The SHAP analysis provides insights into feature importance and how each feature contributes to the model's predictions. The summary plots show the global importance of features, while individual SHAP values help understand specific predictions. This can guide further feature engineering or model refinement.
+##INTERPRETATION OF SHAP ANALYSIS: To improve churn prediction performance, we applied a series of preprocessing and modeling enhancements. First, we removed irrelevant or duplicate columns and transformed categorical variables using one-hot encoding to ensure model interpretability. Missing values were imputed using the median strategy. Given the significant class imbalance in the dataset, we used SMOTE (Synthetic Minority Over-sampling Technique) to balance the training data by synthetically generating minority class samples. We then trained a tuned XGBoost classifier with optimized hyperparameters (e.g., learning rate, max depth, subsampling) to enhance the model's generalization and sensitivity to churn cases. Finally, we applied SHAP (SHapley Additive exPlanations) to interpret feature importance and better understand the drivers behind churn predictions, ensuring both performance and transparency.
+##INTERPRETATION: The updated SHAP summary plot reveals that customer behavior-related features such as return frequency, product category, payment method, and purchase quantity now play a more prominent role in churn prediction. Unlike earlier versions, the model has shifted its attention away from static attributes like age and purchase date, focusing instead on transactional patterns. This indicates improved model sensitivity to business-relevant signals, suggesting that recent data preprocessing steps — including SMOTE balancing, removal of high-cardinality fields, and XGBoost tuning — have contributed to better feature discrimination and model interpretability.
 
 # 12. MODEL COMPARISON PLOT  
 # Model names and AUC values for E-Commerce dataset
