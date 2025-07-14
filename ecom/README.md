@@ -49,6 +49,7 @@ To predict customer churn by performing in-depth data exploration, feature engin
 ## Project Structure
 📁 E-Com_Churn_Analysis/
 ├── E-Com_Churn_Analysis.py
+├──E-Com_Churn_Analysis.ipny
 ├── E-Com_Churn_Analysis.html
 ├── e-commerce_Customer_Dataset.csv
 ├── eda_ecommerce_cleaned.html
@@ -59,7 +60,8 @@ To predict customer churn by performing in-depth data exploration, feature engin
 
 - `E-Com_Churn_Analysis.py`: Complete Python script with EDA, preprocessing, modeling, and SHAP analysis  
 - `ecommerce_eda_report.html`: Automated profiling report generated with `ydata-profiling`  
-- `E-Com_Churn_Analysis.py`: Standalone Python script implementing the full churn prediction workflow. 
+- `E-Com_Churn_Analysis.py`: Standalone Python script implementing the full churn prediction workflow.
+- `E-Com_Churn_Analysis.ipny`:Executable notebook with code, outputs, and visualizations for interactive and reproducible analysis.
 - `E-Com_Churn_Analysis.html`: HTML export with embedded plots and results
 
 ---
