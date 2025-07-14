@@ -1,69 +1,62 @@
-# 🛍️ E-Commerce Customer Churn Analysis
 
-This project analyzes customer churn behavior in an e-commerce setting, with the goal of identifying patterns and improving customer retention strategies through data-driven insights.
+#  E-Commerce Customer Churn Analysis
 
----
-
-## 📊 Objective
-
-To explore and prepare customer data for churn prediction by conducting in-depth exploratory data analysis (EDA), feature engineering, and applying supervised machine learning models.
+This project analyzes customer churn behavior in an e-commerce environment, aiming to uncover actionable insights that improve customer retention using data science techniques.
 
 ---
 
-## 🧠 Approach
+## Objective
 
-The workflow follows these key steps:
+To predict customer churn by performing in-depth data exploration, feature engineering, class balancing, and machine learning modeling.
+
+---
+
+## Project Workflow
 
 1. **Exploratory Data Analysis (EDA)**  
-   - Initial inspection, distribution plots, boxplots, and correlation matrix  
-   - Categorical and numerical feature behavior across churned vs. retained customers  
-   - Statistical tests: ANOVA, Chi-Square, Cramér’s V  
+   - Visual exploration with distribution plots, boxplots, and heatmaps  
+   - Comparison of churned vs. retained customers using statistical tests (ANOVA, Chi-Square, Cramér’s V)
 
 2. **Data Cleaning & Preprocessing**  
-   - Handling missing values and duplicates  
-   - Encoding categorical variables  
-   - Outlier detection and variance inflation factor (VIF) to assess multicollinearity  
+   - Removal of missing values and duplicates  
+   - Label encoding for categorical features  
+   - Multicollinearity check using VIF
 
 3. **Feature Engineering**  
-   - Ratio-based features (e.g., `PriceToQuantity`, `AvgItemValue`)  
-   - Age segmentation (`AgeGroup`)  
-   - Month extraction from purchase date  
+   - Derived features: `PriceToQuantity`, `AvgItemValue`, `AgeGroup`, `PurchaseMonth`  
+   - Normalization and transformations for modeling readiness
 
 4. **Class Imbalance Handling**  
-   - Applied ADASYN oversampling technique to balance churn vs. non-churn classes  
+   - Applied ADASYN to oversample minority (churned) class
 
 5. **Modeling**  
-   - Baseline Logistic Regression  
-   - ADASYN + Logistic Regression  
-   - XGBoost with `scale_pos_weight` adjustment  
-   - Model evaluation via accuracy, ROC AUC, Precision, Recall, and F1-score  
+   - Logistic Regression (baseline & with ADASYN)  
+   - XGBoost with `scale_pos_weight`  
+   - Evaluation metrics: ROC AUC, Accuracy, Precision, Recall, F1-score
 
-6. **Explainability**  
-   - SHAP (SHapley Additive exPlanations) analysis to interpret XGBoost predictions and rank feature importance  
-
----
-
-## 🔧 Techniques Used
-
-- `Pandas`, `NumPy`, `Seaborn`, `Matplotlib`
-- `scikit-learn`, `imblearn`, `xgboost`, `shap`, `ydata-profiling`
-- Statistical tests from `scipy` and `statsmodels`
+6. **Model Explainability**  
+   - SHAP analysis to interpret XGBoost model predictions and identify influential features
 
 ---
 
-## 📁 Files
+## Tools & Libraries
 
-- `E-Com_Churn_Analysis.py`: Full script containing all EDA, feature engineering, modeling, and SHAP interpretation steps.
-- `ecommerce_eda_report.html`: Auto-generated profiling report using `ydata-profiling`.
+- **Languages**: Python  
+- **Libraries**: `pandas`, `numpy`, `seaborn`, `matplotlib`, `scikit-learn`, `xgboost`, `shap`, `imblearn`, `ydata-profiling`, `scipy`, `statsmodels`
 
 ---
 
-## 🔍 Dataset
+## Project Files
+
+- `E-Com_Churn_Analysis.py`: Complete Python script with EDA, preprocessing, modeling, and SHAP analysis  
+- `ecommerce_eda_report.html`: Automated profiling report generated with `ydata-profiling`  
+- `E-Com_Churn_Analysis.ipynb`: Executable notebook version of the entire pipeline  
+- `E-Com_Churn_Analysis.html`: HTML export with embedded plots and results
+
+---
+
+## Dataset
 
 - **Source**:  
-  Jagtap, S. (2023). *E-Commerce Customer for Behavior Analysis* [Dataset]. Kaggle  
-  [🔗 Kaggle Link](https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis)
-
----
-
-
+  Jagtap, S. (2023). *E-Commerce Customer for Behavior Analysis*  
+  [🔗 Kaggle Dataset](https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis)
