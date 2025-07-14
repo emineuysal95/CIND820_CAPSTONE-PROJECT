@@ -1,14 +1,14 @@
-📊 Customer Churn Prediction in E-Commerce & Telecommunication
+ Customer Churn Prediction in E-Commerce & Telecommunication
 Author: Emine Uysal
 Course: CIND 820 – Big Data Analytics Project
 Institution: The G. Raymond Chang School of Continuing Education, Toronto Metropolitan University
 Supervisor: Dr. Tamer Abdou
 Date: June 25, 2025
 
-🔍 Overview
+ Overview
 This project investigates customer churn behavior in two distinct sectors—telecommunications and e-commerce—using machine learning and explainable AI methods. It aims to identify key behavioral and service-related predictors of churn and evaluate the transferability and interpretability of models across domains.
 
-📁 Document Contents
+ Document Contents
 This document includes:
 
 * Revised Abstract
@@ -20,7 +20,7 @@ This document includes:
 
 References (APA 7 Format) and GitHub Repository Link
 
-📂 Dataset Sources
+ Dataset Sources
 
 - Telco Customer Churn Dataset (Kaggle, 2018)
 - E-Commerce Customer Dataset (Shriyash Jagtap, 2023)
