@@ -1,4 +1,4 @@
- Customer Churn Prediction in E-Commerce & Telecommunication
+Customer Churn Prediction in E-Commerce & Telecommunication
 Author: Emine Uysal
 Course: CIND 820 – Big Data Analytics Project
 Institution: The G. Raymond Chang School of Continuing Education, Toronto Metropolitan University
