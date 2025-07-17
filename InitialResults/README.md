@@ -1,1 +1,22 @@
+CIND820_CAPSTONE PROJECT_INITIAL RESULTS
 
+This folder contains the initial comparative results of the customer churn prediction project, focusing on two datasets: Telco and E-Commerce. It presents the early-stage model outcomes, performance metrics, class balance evaluations, and visual insights prior to final model optimization and dashboard integration.
+
+ Contents
+telco_churn_analysis.py
+Python script used to preprocess the Telco dataset, handle class imbalance (SMOTE), train models (Logistic Regression, Random Forest, XGBoost), and evaluate performance.
+
+E-Com_Churn_Analysis.py
+Python script for the E-Commerce dataset, including ADASYN resampling, feature engineering, and model evaluation.
+
+telco_churn_analysis.ipynb / E-Com_Churn_Analysis.ipynb
+Full Jupyter notebooks with exploratory analysis, preprocessing steps, and annotated visuals for both datasets.
+
+HTML Reports
+Rendered versions of the notebooks for easy review of code, outputs, and visualizations.
+
+Figure 17 – Class Distribution Comparison
+Visual summary comparing class distributions before and after resampling in both datasets.
+
+ Summary
+These initial results highlight early findings in the modeling phase, showcasing the impact of resampling techniques, key feature insights, and performance differences across domains. Further refinement and visualization (e.g., Power BI dashboard) will be incorporated during the final presentation phase.
