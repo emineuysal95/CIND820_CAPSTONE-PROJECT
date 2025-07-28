@@ -1,82 +1,110 @@
+# E-Commerce Customer Churn Prediction
 
-#  E-Commerce Customer Churn Analysis
-
-This project analyzes customer churn behavior in an e-commerce environment, aiming to uncover actionable insights that improve customer retention using data science techniques.
-
----
-
-## Objective
-
-To predict customer churn by performing in-depth data exploration, feature engineering, class balancing, and machine learning modeling.
+This project aims to analyze and predict customer churn behavior in the e-commerce sector using a real-world customer dataset. The objective is to build explainable and reliable machine learning models that highlight key churn drivers and provide actionable insights.
 
 ---
 
-## Project Workflow
+# Project Overview
 
-1. **Exploratory Data Analysis (EDA)**  
-   - Visual exploration with distribution plots, boxplots, and heatmaps  
-   - Comparison of churned vs. retained customers using statistical tests (ANOVA, Chi-Square, Cramér’s V)
-
-2. **Data Cleaning & Preprocessing**  
-   - Removal of missing values and duplicates  
-   - Label encoding for categorical features  
-   - Multicollinearity check using VIF
-
-3. **Feature Engineering**  
-   - Derived features: `PriceToQuantity`, `AvgItemValue`, `AgeGroup`, `PurchaseMonth`  
-   - Normalization and transformations for modeling readiness
-
-4. **Class Imbalance Handling**  
-   - Applied ADASYN to oversample minority (churned) class
-
-5. **Modeling**  
-   - Logistic Regression (baseline & with ADASYN)  
-   - XGBoost with `scale_pos_weight`  
-   - Evaluation metrics: ROC AUC, Accuracy, Precision, Recall, F1-score
-
-6. **Model Explainability**  
-   - SHAP analysis to interpret XGBoost model predictions and identify influential features
+* **Domain:** E-Commerce
+* **Objective:** Predict whether a customer will churn based on historical shopping behavior and demographics
+* **Dataset:** E-Commerce Churn Dataset (cleaned and preprocessed)
 
 ---
 
-## Tools & Libraries
+# Repository Structure
 
-- **Languages**: Python  
-- **Libraries**: `pandas`, `numpy`, `seaborn`, `matplotlib`, `scikit-learn`, `xgboost`, `shap`, `imblearn`, `ydata-profiling`, `scipy`, `statsmodels`
-
----
-
-## Project Structure
-📁 E-Com_Churn_Analysis/
-├── E-Com_Churn_Analysis.py
-├──E-Com_Churn_Analysis.ipny
-├── E-Com_Churn_Analysis.html
-├── e-commerce_Customer_Dataset.csv
-├── eda_ecommerce_cleaned.html
-├── eda_ecom_raw.html
-└── README.md
-
-## Project Files
-
-- `E-Com_Churn_Analysis.py`: Complete Python script with EDA, preprocessing, modeling, and SHAP analysis  
-- `ecommerce_eda_report.html`: Automated profiling report generated with `ydata-profiling`  
-- `E-Com_Churn_Analysis.py`: Standalone Python script implementing the full churn prediction workflow.
-- `E-Com_Churn_Analysis.ipny`:Executable notebook with code, outputs, and visualizations for interactive and reproducible analysis.
-- `E-Com_Churn_Analysis.html`: HTML export with embedded plots and results
+```
+├── E-Com_Churn_Analysis.ipynb        # Jupyter Notebook with full pipeline (EDA to SHAP)
+├── E-Com_Churn_Analysis.py           # Python script version of the workflow
+├── ecommerce_customer_data.csv       # Original customer churn dataset
+├── README.md                         # Project overview and documentation
+├── Eda Reports/                      # Automated profiling and EDA visuals
+└── E-Com_Churn_Analysis.html         # Executed notebook in HTML format
+```
 
 ---
 
-## Dataset
+# Methodology
 
-- **Source**:  
-  Jagtap, S. (2023). *E-Commerce Customer for Behavior Analysis*  
+## 1. Exploratory Data Analysis (EDA)
+
+* Missing values, outliers, class imbalance overview
+* Distribution analysis (churn vs non-churn)
+* Correlation analysis (heatmap, Cramér’s V)
+
+## 2. Feature Engineering
+
+* Created features: `PriceToQuantity`, `AvgItemValue`, `AgeGroup`
+* One-hot encoding for categorical variables
+* Statistical tests:
+
+  * Chi-Square for categorical features
+  * ANOVA for numerical features
+
+## 3. Modeling Pipeline
+
+* Models Used:
+
+  * Logistic Regression (baseline)
+  * XGBoost (with GridSearchCV tuning)
+* Evaluation Metrics:
+
+  * Accuracy
+  * ROC AUC
+  * F1 Score
+  * MCC
+  * Confusion Matrix
+* **Class Imbalance Handling:** ADASYN used to oversample the minority churn class
+
+## 4. Model Interpretation
+
+* SHAP values computed on test data using tuned XGBoost model
+* SHAP summary plots (bar & beeswarm) to identify important features
+* Business insights drawn from most impactful features
+
+---
+
+# Key Insights
+
+* Features such as `Support Tickets`, `Product Category`, `Return Rate`, and `High Purchase Amount` are strong churn indicators
+* Customers with frequent returns and low support satisfaction are more likely to churn
+* A low AvgItemValue may also relate to lower loyalty
+
+---
+
+# Tools & Libraries Used
+
+* Python (Pandas, NumPy, Scikit-learn, Matplotlib, Seaborn)
+* XGBoost
+* SHAP
+* Imbalanced-learn (ADASYN)
+* SciPy & Statsmodels (ANOVA, Chi-square)
+* ydata-profiling for automated EDA
+
+---
+
+# Performance Summary
+
+| Model               | Accuracy | ROC AUC | F1-Score | MCC  |
+| ------------------- | -------- | ------- | -------- | ---- |
+| Logistic Regression | 0.80     | 0.52    | 0.25     | 0.10 |
+| XGBoost (tuned)     | 0.83     | 0.78    | 0.61     | 0.52 |
+
+> The tuned XGBoost model significantly outperforms the baseline, especially in handling class imbalance and identifying churn risk with interpretable results.
+
+---
+
+# Dataset
+
+* **Source:**
+  Jagtap, S. (2023). *E-Commerce Customer for Behavior Analysis*
   [🔗 Kaggle Dataset](https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis)
 
 ---
 
-## Author
+# Author
 
-Emine Uysal  
-Certificate Student, Data Analytics, Big Data & Predictive Analytics  
-Toronto Metropolitan University  
-[GitHub Profile](https://github.com/emineuysal95)
+**Emine Uysal**
+Certificate Student, Data Analytics, Big Data & Predictive Analytics
+Toronto Metropolitan University
